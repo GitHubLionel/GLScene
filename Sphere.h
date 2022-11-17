@@ -28,6 +28,8 @@ class TSphere : public TObject3D
   public:
     TSphere(GLfloat _radius, TVector3D *pos = NULL);
     TSphere(TVector3D _radius, TVector3D *pos = NULL);
+    TSphere(GLfloat _radius, const TVector3D &pos);
+    TSphere(TVector3D _radius, const TVector3D &pos);
     virtual ~TSphere();
 
     void SetRadius(GLfloat _radius)

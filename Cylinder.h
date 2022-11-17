@@ -32,6 +32,7 @@ class TCylinder : public TObject3D
 
   public:
     TCylinder(GLfloat _height, GLfloat _radius, TVector3D *pos = NULL);
+    TCylinder(GLfloat _height, GLfloat _radius, const TVector3D &pos);
     virtual ~TCylinder();
 
     void SetPosition(const TVector3D *pos) { position = *pos; ComputeParameters(); }

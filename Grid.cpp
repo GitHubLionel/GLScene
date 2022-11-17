@@ -5,22 +5,19 @@
  * TGrid class
  * Params: _size
  */
-TGrid::TGrid(TVector3D _size) : TObject3D()
+TGrid::TGrid(TVector3D _size, bool centered) : TObject3D()
 {
 	ObjectType = otGrid;
 	size = _size;
 	ComputeCenterGrid();
 
-	ambient = { 0.0, 0.0, 0.0, 1.0 };
-	diffuse = { 0.5, 0.5, 1.0, 1.0 };
-	specular = { 0.0, 0.0, 0.0, 1.0 };
-	emission = { 0.2, 0.2, 0.2, 1.0 };
-	shininess = { 10.0, 0.0, 0.0, 0.0 };
+  material.SetColor(mfFront, msAmbient, { 0.0, 0.0, 0.0, 1.0 });
+  material.SetColor(mfFront, msDiffuse, { 0.5, 0.5, 1.0, 1.0 });
 
 	gridX = gridY = gridZ = true;
 	planZ = -1;
 	Node = false;
-	SetCenterGrid(false);
+	SetCenterGrid(centered);
 	SetGridStep(1);
 }
 

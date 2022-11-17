@@ -6,15 +6,12 @@
 #include <stdio.h>
 #include "Vector3D.h"
 #include "Vector4D.h"
+#include "Material.h"
 #include <initializer_list> // for std::initializer_list
 #include "GLColor.h"
 
 namespace GLScene
 {
-
-typedef enum {
-	mcAmbient, mcDiffuse, mcEmission, mcShininess, mcSpecular
-} TMaterialColor;
 
 typedef enum {
 	otAxis, otCube, otCuboid, otCylinder, otSphere, otEllipsoid, otArrow, otGrid, otNone
@@ -56,11 +53,12 @@ class TObject3D {
 		bool DoScale = false;
 
 		// Material
-		TVector4D ambient;
-		TVector4D diffuse;
-		TVector4D specular;
-		TVector4D emission;
-		TVector4D shininess;
+		TMaterial material = TMaterial();
+//		TVector4D ambient;
+//		TVector4D diffuse;
+//		TVector4D specular;
+//		TVector4D emission;
+//		TVector4D shininess;
 		bool DoUseMaterial = true;
 
 		float levelOfDetail;
@@ -68,6 +66,7 @@ class TObject3D {
 
 	public:
 		TObject3D(TVector3D *pos = NULL, TVector3D *rot = NULL, TVector3D *sca = NULL);
+		TObject3D(const TVector3D &pos);
 		virtual ~TObject3D();
 
 		/// A tag for the user
@@ -130,10 +129,12 @@ class TObject3D {
 		void SetScale(TVector3D *sca);
 		void SetLevelOfDetail(float);
 
-		virtual void SetDefaultColor();
-		void SetMaterialColor(const TVector4D _ambiant_diffuse, GLfloat alpha = 1.0);
-		void SetMaterialColor(const TMaterialColor _mat, const TVector4D _color);
-		void SetMaterialColor(const TMaterialColor _mat, const GLfloat _inc);
+		TMaterial &GetMaterial(void)
+		{
+			return material;
+		}
+
+		void ChangeFrontEmission(GLfloat val);
 
 		// getters
 		inline TObjectType GetObjectType()

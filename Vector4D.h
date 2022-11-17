@@ -30,6 +30,13 @@ typedef union TVector4D
 				GLfloat Z;
 				GLfloat alpha;
 		};
+		struct
+		{
+				GLfloat R;
+				GLfloat G;
+				GLfloat B;
+				GLfloat Alpha;
+		};
 
 	public:
 		/// Default constructor. Initialize to (0, 0, 0, 0)

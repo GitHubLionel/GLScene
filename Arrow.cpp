@@ -9,11 +9,9 @@ TArrow::TArrow(GLfloat _len, GLfloat _thickness, TVector3D *pos) : TObject3D(pos
   thickness = _thickness;
   levelOfDetail = 10;
 
-  ambient = GLColor_red;
-  diffuse = GLColor_red;
-  emission = {0.1, 0.1, 0.1, 1.0};
-  specular = {1.0, 1.0, 1.0, 1.0};
-  shininess = {50.0, 0.0, 0.0, 0.0};
+  material.SetColor(mfFront, msAmbient, GLColor_red);
+  material.SetColor(mfFront, msDiffuse, GLColor_red);
+
   direction = {1.0, 1.0, 1.0};
 
   ComputeParameters();

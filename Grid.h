@@ -39,7 +39,7 @@ class TGrid: public TObject3D
 	protected:
 
 	public:
-		TGrid(TVector3D _size);
+		TGrid(TVector3D _size, bool centered = false);
 		virtual ~TGrid();
 
 		void virtual DoDisplay(TDisplayMode mode = dmRender);

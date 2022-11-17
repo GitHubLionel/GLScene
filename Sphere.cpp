@@ -8,14 +8,18 @@ TSphere::TSphere(GLfloat _radius, TVector3D *pos) : TObject3D(pos, NULL, NULL)
   IsSphere = true;
 
   // Yellow sphere
-//  ambient = {0.8, 0.8, 0.2, 1.0};
-  ambient = GLColor_yellow;
-  diffuse = GLColor_yellow;
-  emission = {0.1, 0.1, 0.1, 1.0};
-  specular = {0.1, 0.1, 0.1, 1.0};
-  shininess = {0.0, 0.0, 0.0, 0.0};
+	material.SetColor(mfFront, msAmbient, {0.647059, 0.164706, 0.164706, 1.0});
+	material.SetColor(mfFront, msDiffuse, GLColor_yellow);
+
+	material.SetColor(mfBack, msAmbient, {0.2, 0.2, 0.2, 1.0});
+	material.SetColor(mfBack, msDiffuse, {0.8, 0.8, 0.8, 1.0});
 
   DoPosition = true;
+}
+
+TSphere::TSphere(GLfloat _radius, const TVector3D &pos) : TSphere(_radius)
+{
+	position = pos;
 }
 
 TSphere::TSphere(TVector3D _radius, TVector3D *pos) : TObject3D(pos, NULL, NULL)
@@ -26,15 +30,19 @@ TSphere::TSphere(TVector3D _radius, TVector3D *pos) : TObject3D(pos, NULL, NULL)
   IsSphere = false;
   radius = 1;
 
-  // Yellow ellipsoïd
-//  ambient = {0.8, 0.8, 0.2, 1.0};
-  ambient = GLColor_yellow;
-  diffuse = GLColor_yellow;
-  emission = {0.1, 0.1, 0.1, 1.0};
-  specular = {0.1, 0.1, 0.1, 1.0};
-  shininess = {0.0, 0.0, 0.0, 0.0};
+  // Yellow sphere
+	material.SetColor(mfFront, msAmbient, {0.647059, 0.164706, 0.164706, 1.0});
+	material.SetColor(mfFront, msDiffuse, GLColor_yellow);
+
+	material.SetColor(mfBack, msAmbient, {0.2, 0.2, 0.2, 1.0});
+	material.SetColor(mfBack, msDiffuse, {0.8, 0.8, 0.8, 1.0});
 
   DoPosition = true;
+}
+
+TSphere::TSphere(TVector3D _radius, const TVector3D &pos) : TSphere(_radius)
+{
+	position = pos;
 }
 
 TSphere::~TSphere()

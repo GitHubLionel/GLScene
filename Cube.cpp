@@ -7,13 +7,20 @@ TCube::TCube(GLfloat _size, TVector3D *pos) : TObject3D(pos)
   size = _size;
   IsCube = true;
 
-  ambient = GLColor_blue;
-  diffuse = GLColor_blue;
-  emission = {0.1, 0.1, 0.1, 1.0};
-  specular = {1.0, 1.0, 1.0, 1.0};
-  shininess = {50.0, 0.0, 0.0, 0.0};
+	material.SetColor(mfFront, msAmbient, {0.1, 0.1, 0.8, 1.0});
+	material.SetColor(mfFront, msDiffuse, GLColor_blue);
+
+	material.SetColor(mfBack, msAmbient, {0.2, 0.2, 0.2, 1.0});
+	material.SetColor(mfBack, msDiffuse, {0.8, 0.8, 0.8, 1.0});
+
   direction = {0.0, 0.0, 1.0};
 
+  ComputeParameters();
+}
+
+TCube::TCube(GLfloat _size, const TVector3D &pos) : TCube(_size)
+{
+	position = pos;
   ComputeParameters();
 }
 
@@ -24,13 +31,20 @@ TCube::TCube(TVector3D _size, TVector3D *pos) : TObject3D(pos)
   size3D = _size;
   IsCube = false;
 
-  ambient = GLColor_blue;
-  diffuse = GLColor_blue;
-  emission = {0.1, 0.1, 0.1, 1.0};
-  specular = {1.0, 1.0, 1.0, 1.0};
-  shininess = {50.0, 0.0, 0.0, 0.0};
+	material.SetColor(mfFront, msAmbient, {0.1, 0.1, 0.8, 1.0});
+	material.SetColor(mfFront, msDiffuse, GLColor_blue);
+
+	material.SetColor(mfBack, msAmbient, {0.2, 0.2, 0.2, 1.0});
+	material.SetColor(mfBack, msDiffuse, {0.8, 0.8, 0.8, 1.0});
+
   direction = {0.0, 0.0, 1.0};
 
+  ComputeParameters();
+}
+
+TCube::TCube(TVector3D _size, const TVector3D &pos) : TCube(_size)
+{
+	position = pos;
   ComputeParameters();
 }
 

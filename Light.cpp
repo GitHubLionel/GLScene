@@ -13,11 +13,14 @@ TLight::TLight(GLenum _light, TLightStyle _style, TVector3D *pos) : TObject3D(po
   Changed = true;
   enabled = true;
 
-  position = {50.0, 50.0, 100.0};
+  if (pos)
+  	SetPosition(pos);
+  else
+    position = {50.0, 150.0, 100.0};
 
-  ambient = {0.2, 0.2, 0.2, 1.0};
-  diffuse = {0.8, 0.8, 0.8, 1.0};
-  specular = {0.0, 0.0, 0.0, 1.0}; // Not brilliant
+  Ambient = {0.2, 0.2, 0.2, 1.0};
+  Diffuse = {1.0, 1.0, 1.0, 1.0};
+  Specular = {0.0, 0.0, 0.0, 1.0}; // Not brilliant
 
   model_ambient = {0.2, 0.2, 0.2, 1.0};
   local_view = {0.0, 0.0, 0.0, 0.0};
@@ -28,7 +31,6 @@ void TLight::Render()
 {
   if (!Changed || !enabled)
   {
-    Changed = false;
     return;
   }
 
@@ -38,9 +40,9 @@ void TLight::Render()
   glLightfv(num_light, GL_POSITION, TVector4D(position, 0).Array());
 
   // Style
-  glLightfv(num_light, GL_AMBIENT, ambient.Array());
-  glLightfv(num_light, GL_DIFFUSE, diffuse.Array());
-  glLightfv(num_light, GL_SPECULAR, specular.Array());
+  glLightfv(num_light, GL_AMBIENT, Ambient.Array());
+  glLightfv(num_light, GL_DIFFUSE, Diffuse.Array());
+  glLightfv(num_light, GL_SPECULAR, Specular.Array());
 
   glLightfv(num_light, GL_CONSTANT_ATTENUATION, &const_at);
   glLightfv(num_light, GL_LINEAR_ATTENUATION, &lin_at);
@@ -69,9 +71,9 @@ void TLight::Render()
  */
 void TLight::SetDefaultColor()
 {
-  ambient = {0.0, 0.0, 0.0, 1.0};
-  diffuse = {1.0, 1.0, 1.0, 1.0};
-  specular = {1.0, 1.0, 1.0, 1.0};
+  Ambient = {0.0, 0.0, 0.0, 1.0};
+  Diffuse = {1.0, 1.0, 1.0, 1.0};
+  Specular = {1.0, 1.0, 1.0, 1.0};
   model_ambient = {0.2, 0.2, 0.2, 1.0};
   local_view = {0.0, 0.0, 0.0, 0.0};   // only the first parameter is used
   Changed = true;
@@ -85,9 +87,9 @@ void TLight::SetLightColor(const TLightColor _light, const TVector4D _color)
   Changed = true;
   switch (_light)
   {
-    case lcAmbient: ambient = _color; break;
-    case lcDiffuse: diffuse = _color; break;
-    case lcSpecular: specular = _color; break;
+    case lcAmbient: Ambient = _color; break;
+    case lcDiffuse: Diffuse = _color; break;
+    case lcSpecular: Specular = _color; break;
     case lcModelAmbient: model_ambient = _color; break;
     default : Changed = false;
   }
@@ -104,9 +106,9 @@ void TLight::SetLightColor(const TLightColor _light, const GLfloat _inc)
   Changed = true;
   switch (_light)
   {
-    case lcAmbient: if (CheckIncrement(ambient.X, _inc)) ambient += _inc; break;
-    case lcDiffuse: if (CheckIncrement(diffuse.X, _inc)) diffuse += _inc; break;
-    case lcSpecular: if (CheckIncrement(specular.X, _inc)) specular += _inc; break;
+    case lcAmbient: if (CheckIncrement(Ambient.X, _inc)) Ambient += _inc; break;
+    case lcDiffuse: if (CheckIncrement(Diffuse.X, _inc)) Diffuse += _inc; break;
+    case lcSpecular: if (CheckIncrement(Specular.X, _inc)) Specular += _inc; break;
     case lcModelAmbient: if (CheckIncrement(model_ambient.X, _inc)) model_ambient += _inc; break;
     default : Changed = false;
   }
@@ -119,9 +121,9 @@ void TLight::SetStyle(TLightStyle _style)
 {
   style = _style;
 
-  const_at = 1;
-  lin_at = 0;
-  quad_at = 0;
+  const_at = 1.0;
+  lin_at = 0.0;
+  quad_at = 0.0;
 
   if (style == Spot)
   {

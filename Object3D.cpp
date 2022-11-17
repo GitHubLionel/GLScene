@@ -14,6 +14,12 @@ TObject3D::TObject3D(TVector3D *pos, TVector3D *rot, TVector3D *sca)
 	if (sca) SetScale(sca);
 }
 
+TObject3D::TObject3D(const TVector3D &pos)
+{
+	defaultSettings();
+	position = pos;
+}
+
 TObject3D::~TObject3D()
 {
 
@@ -36,9 +42,6 @@ void TObject3D::defaultSettings()
 	UserPointer = NULL;
 	Tag = 0;
 
-	// Default color for the material
-	SetDefaultColor();
-
 	Lighted = true;
 	Visible = true;
 	Changed = true;
@@ -49,72 +52,6 @@ void TObject3D::defaultSettings()
 
 // SETTERS
 //-------------------------------------------------
-/**
- * The default material color
- * https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glMaterial.xml
- */
-void TObject3D::SetDefaultColor()
-{
-	ambient = { 0.2, 0.2, 0.2, 1.0 };
-	diffuse = { 0.8, 0.8, 0.8, 1.0 };
-	emission = { 0.0, 0.0, 0.0, 1.0 };
-	specular = { 0.0, 0.0, 0.0, 1.0 };
-	shininess = { 0.0, 0.0, 0.0, 0.0 };  // only the first parameter is used
-	Changed = true;
-}
-
-void TObject3D::SetMaterialColor(const TVector4D _ambiant_diffuse, GLfloat alpha)
-{
-	ambient = _ambiant_diffuse;
-	ambient.alpha = alpha;
-	diffuse = _ambiant_diffuse;
-	diffuse.alpha = alpha;
-	Changed = true;
-}
-
-void TObject3D::SetMaterialColor(const TMaterialColor _mat, const TVector4D _color)
-{
-	switch (_mat) {
-		case mcAmbient:
-			ambient = _color;
-			break;
-		case mcDiffuse:
-			diffuse = _color;
-			break;
-		case mcEmission:
-			emission = _color;
-			break;
-		case mcShininess:
-			shininess = _color;
-			break;
-		case mcSpecular:
-			specular = _color;
-			break;
-	}
-	Changed = true;
-}
-
-void TObject3D::SetMaterialColor(const TMaterialColor _mat, const GLfloat _inc)
-{
-	switch (_mat) {
-		case mcAmbient:
-			ambient += _inc;
-			break;
-		case mcDiffuse:
-			diffuse += _inc;
-			break;
-		case mcEmission:
-			emission += _inc;
-			break;
-		case mcShininess:
-			shininess += _inc;
-			break;
-		case mcSpecular:
-			specular += _inc;
-			break;
-	}
-	Changed = true;
-}
 
 void TObject3D::SetPosition(std::initializer_list<GLfloat> list)
 {
@@ -150,7 +87,7 @@ void TObject3D::SetScale(TVector3D *sca)
 	Changed = true;
 }
 
-// seteaza nivelul de detaliu
+// set level of detail
 void TObject3D::SetLevelOfDetail(float _levelOfDetail)
 {
 	if (_levelOfDetail > 0 && _levelOfDetail < 50)
@@ -158,6 +95,11 @@ void TObject3D::SetLevelOfDetail(float _levelOfDetail)
 		levelOfDetail = _levelOfDetail;
 		Changed = true;
 	}
+}
+
+void TObject3D::ChangeFrontEmission(GLfloat val)
+{
+	material.SetColor(mfFront, msEmission, val);
 }
 
 // DRAW
@@ -184,11 +126,7 @@ void TObject3D::Display(int id, TDisplayMode mode)
 
 	if (DoUseMaterial && (mode == dmRender))
 	{
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient.Array());
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.Array());
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission.Array());
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular.Array());
-		glMaterialfv(GL_FRONT, GL_SHININESS, shininess.Array());
+		material.ApplyMaterial();
 	}
 
 	// Set a name in select mode
@@ -242,6 +180,10 @@ void TObject3D::PrepareRotate(GLfloat len)
 	glTranslated(a.X, a.Y, a.Z);
 	glRotated(angle, t.X, t.Y, t.Z);
 }
+
+// ********************************************************************************
+// Random functions
+// ********************************************************************************
 
 /**
  * Return a random number between [-1, 1]

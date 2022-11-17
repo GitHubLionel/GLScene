@@ -66,12 +66,12 @@ class TGLScene: virtual public GLCallBack {
 		bool IsRunning;
 		bool CanResize;
 		TVector3D Center_Translation;
+		int mouse_x = 0, mouse_y = 0;
 
 	protected:
 		TDisplayMode display_mode;
 		// For mouse move
 		bool mouse_dragging = false;
-		int mouse_x = 0, mouse_y = 0;
 		int mouse_x0 = 0, mouse_y0 = 0;
 		GLfloat mouse_Xrot = 0.0, mouse_Yrot = 0.0;
 		GLfloat mouse_scale = 0.0;
@@ -115,10 +115,16 @@ class TGLScene: virtual public GLCallBack {
 			CanResize = resizable;
 		}
 
-		void Zoom(const int inc = 1);
-		void CenterUpDown(const GLfloat incZ);
-		void UpDown(const GLfloat incY);
-		void LeftRight(const GLfloat incX);
+		void Zoom(const int inc = 1, bool redisplay = true);
+		void CenterUpDown(const GLfloat incZ, bool redisplay = true);
+		void UpDown(const GLfloat incY, bool redisplay = true);
+		void LeftRight(const GLfloat incX, bool redisplay = true);
+
+		// Set the center of the scene
+		void SetCenter(const TVector3D &pos)
+		{
+			Center_Translation = pos;
+		}
 
 		int GetWidth()
 		{
@@ -144,6 +150,7 @@ class TGLScene: virtual public GLCallBack {
 		virtual void Create_GLScene(void);
 		virtual void Update_GLScene(bool Repaint = true);
 		virtual void SetProjection(int width, int height);
+		void InitialView(void);
 		void SetFullScreen(bool on);
 
 		// Picking
@@ -181,6 +188,8 @@ class TGLScene: virtual public GLCallBack {
 		void Screenshot(void);
 #endif
 
+		/// Clean sub window
+		void CleanSubDisplay(void);
 		/// Sub window gestion
 		virtual void SubDisplay(void);
 		/// Callback for OpenGL for display sub window
@@ -189,7 +198,7 @@ class TGLScene: virtual public GLCallBack {
 		/// Creation of the Context for the OpenGL Window
 		void Create_GLContextWindow(int width = 800, int height = 600, int posX = 150, int posY = 100);
 		/// Creation of a new OpenGL Window
-		void Create_GLWindow(const char *name, bool blending = false);
+		void Create_GLWindow(const char *name, bool blending, TVector4D backcolor = GLColor_white);
 		/// Creation of a new sub Window
 		void Create_GLSubWindow(int width, int height, int posX, int posY, glWinLocation loc = glwNone);
 

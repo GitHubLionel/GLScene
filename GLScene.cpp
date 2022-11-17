@@ -120,7 +120,7 @@ void TGLScene::ReDisplay(bool _redraw_view)
 /**
  * Zoom the scene plus if inc > 0
  */
-void TGLScene::Zoom(const int inc)
+void TGLScene::Zoom(const int inc, bool redisplay)
 {
 	int i;
 
@@ -135,34 +135,38 @@ void TGLScene::Zoom(const int inc)
 			for (i = 1; i <= -inc; i++)
 				mouse_scale *= ZOOM_FACTOR_MINUS;
 		}
-	ReDisplay();
+	if (redisplay)
+	  ReDisplay();
 }
 
 /**
  * Move the scene up if incZ > 0; down if incZ < 0
  */
-void TGLScene::CenterUpDown(const GLfloat incZ)
+void TGLScene::CenterUpDown(const GLfloat incZ, bool redisplay)
 {
 	Center_Translation.Z += incZ;
-	ReDisplay();
+	if (redisplay)
+	  ReDisplay();
 }
 
 /**
  * Rotate the scene up if incY > 0; down if incY < 0
  */
-void TGLScene::UpDown(const GLfloat incY)
+void TGLScene::UpDown(const GLfloat incY, bool redisplay)
 {
 	mouse_Yrot -= incY;
-	ReDisplay();
+	if (redisplay)
+	  ReDisplay();
 }
 
 /**
  * Rotate the scene right if incX > 0; left if incX < 0
  */
-void TGLScene::LeftRight(const GLfloat incX)
+void TGLScene::LeftRight(const GLfloat incX, bool redisplay)
 {
 	mouse_Xrot += incX;
-	ReDisplay();
+	if (redisplay)
+	  ReDisplay();
 }
 
 /**
@@ -290,13 +294,13 @@ void TGLScene::Create_GLScene(void)
 
 	// Add cylinder and cube
 	TCylinder *cylinder = new TCylinder(1, 0.3);
-	cylinder->SetPosition( { 0.0, 0.0, 1.0 });
-	cylinder->SetDirection( { 1.0, 0.0, 0.0 });
+	cylinder->SetPosition({ 0.0, 0.0, 1.0 });
+	cylinder->SetDirection({ 1.0, 0.0, 0.0 });
 	AddObject3D(cylinder);
 
 	TCube *cube = new TCube(1.0);
-	cube->SetPosition( { 0.0, 2.0, 0.0 });
-	cube->SetDirection( { 0.0, 1.0, 1.0 });
+	cube->SetPosition({ 0.0, 2.0, 0.0 });
+	cube->SetDirection({ 0.0, 1.0, 1.0 });
 	AddObject3D(cube);
 #endif
 }
@@ -393,6 +397,20 @@ void TGLScene::SetProjection(int width, int height)
 }
 
 //---------------------------------------------------------------------------
+void TGLScene::InitialView(void)
+{
+	mouse_dragging = false;
+	mouse_x = 0, mouse_y = 0;
+	mouse_x0 = 0, mouse_y0 = 0;
+	// First orientation : (1, 1, 1) en face
+	mouse_Xrot = -135.0, mouse_Yrot = -45.0;
+	mouse_scale = 1.0;
+	Center_Translation = {0.0, 0.0, 0.0};
+	display_mode = dmRender;
+	redraw_view = true;
+}
+
+//---------------------------------------------------------------------------
 void TGLScene::OnReshape(int width, int height)
 {
 	// Prevent any resize
@@ -406,10 +424,6 @@ void TGLScene::OnReshape(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	SetProjection(width, height);
-
-	// First orientation : (1, 1, 1) en face
-	mouse_Xrot = -135.0, mouse_Yrot = -45.0;
-	mouse_scale = 1.0;
 	ReDisplay();
 	MainWin.height = height;
 	MainWin.width = width;
@@ -496,6 +510,23 @@ void TGLScene::OnSubDisplay(void)
 }
 
 //---------------------------------------------------------------------------
+void TGLScene::CleanSubDisplay(void)
+{
+	// Refresh sub window
+	if (SubWindow_ID >= 0)
+	{
+		glutSetWindow(SubWindow_ID);
+		if (glutGetWindow() > 0)
+		{
+			glutPostWindowRedisplay(SubWindow_ID);
+		}
+
+		// Back to main window
+		glutSetWindow(Window_ID);
+	}
+}
+
+//---------------------------------------------------------------------------
 void TGLScene::SubDisplay(void)
 {
 	ScenePrintf(1, 1, SubWinColor.borderWidth, "Object: %d", PickedObject);
@@ -514,8 +545,8 @@ void TGLScene::DoPicking(int mod)
 	// Reduce emission on picked object
 	if (DoDefault)
 	{
-		if (OldPickedObject > 0) GetObject3D(OldPickedObject)->SetMaterialColor(mcEmission, -0.3);
-		if (PickedObject > 0) GetObject3D(PickedObject)->SetMaterialColor(mcEmission, 0.3);
+		if (OldPickedObject > 0) GetObject3D(OldPickedObject)->ChangeFrontEmission(-0.2);
+		if (PickedObject > 0) GetObject3D(PickedObject)->ChangeFrontEmission(0.2);
 	}
 
 	// Refresh sub window
@@ -885,7 +916,7 @@ void TGLScene::Create_GLContextWindow(int width, int height, int posX, int posY)
 	MainWin.posY = posY;
 	glutInitWindowSize(width, height);
 	glutInitWindowPosition(posX, posY);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA);
 	try
 	{
 		glutInit(&myargc, myargv);
@@ -902,7 +933,7 @@ void TGLScene::Create_GLContextWindow(int width, int height, int posX, int posY)
  * Create a new OpenGL Window and assign the callback
  * Normally, the GLContext is already created
  */
-void TGLScene::Create_GLWindow(const char *name, bool blending)
+void TGLScene::Create_GLWindow(const char *name, bool blending, TVector4D backcolor)
 {
 	// We only want one window
 	if (GLWindow_Exist) return;
@@ -954,8 +985,8 @@ void TGLScene::Create_GLWindow(const char *name, bool blending)
 	glDepthFunc(GL_LESS);
 	glClearDepth(1.0);
 
-//  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);  // Black
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  // White
+	// Default : White
+	glClearColor(backcolor.R, backcolor.G, backcolor.B, backcolor.Alpha);
 
 	glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
 

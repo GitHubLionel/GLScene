@@ -9,14 +9,21 @@ TCylinder::TCylinder(GLfloat _height, GLfloat _radius, TVector3D *pos) : TObject
   radius = _radius;
   levelOfDetail = 20;
 
-  ambient = GLColor_red;
-  diffuse = GLColor_red;
-  emission = {0.1, 0.1, 0.1, 1.0};
-  specular = {1.0, 1.0, 1.0, 1.0};
-  shininess = {50.0, 0.0, 0.0, 0.0};
   direction = {0.0, 0.0, 1.0};
 
-  ComputeParameters();
+	material.SetColor(mfFront, msAmbient, {0.8, 0.1, 0.1, 1.0});
+	material.SetColor(mfFront, msDiffuse, GLColor_red);
+
+	material.SetColor(mfBack, msAmbient, {0.2, 0.2, 0.2, 1.0});
+	material.SetColor(mfBack, msDiffuse, {0.8, 0.8, 0.8, 1.0});
+
+	ComputeParameters();
+}
+
+TCylinder::TCylinder(GLfloat _height, GLfloat _radius, const TVector3D &pos) : TCylinder(_height, _radius)
+{
+	position = pos;
+	ComputeParameters();
 }
 
 TCylinder::~TCylinder()

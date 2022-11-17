@@ -77,10 +77,10 @@ int main()
 	// Création de la scène
 	TheScene->Create_GLScene();
 	// Pour le timer pour une animation
-	TheScene->TimerStepms = 200;
+	TheScene->TimerStepms = 500;
 
   // Création de la windows
-  TheScene->Create_GLWindow("GLScene", true);
+  TheScene->Create_GLWindow("GLScene", true, GLColor_teal);
 
   // Création du Menu
   TheScene->Create_GLMenu({"Menu 1", "Menu 2"});

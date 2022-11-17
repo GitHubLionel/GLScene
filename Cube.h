@@ -32,6 +32,8 @@ class TCube : public TObject3D
   public:
     TCube(GLfloat _size, TVector3D *pos = NULL);
     TCube(TVector3D _size, TVector3D *pos = NULL);
+    TCube(GLfloat _size, const TVector3D &pos);
+    TCube(TVector3D _size, const TVector3D &pos);
     virtual ~TCube();
 
     void SetPosition(const TVector3D *pos) { position = *pos; ComputeParameters(); }

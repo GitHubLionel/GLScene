@@ -17,11 +17,10 @@ TAxis::TAxis(GLfloat l) : TObject3D()
     font_width  = textsize / glutStrokeLength(GLUT_STROKE_MONO_ROMAN, (unsigned char *)"X");
   }
 
-  ambient = {0.0, 0.0, 0.0, 1.0};
-  diffuse = {0.5, 0.5, 1.0, 1.0};
-  specular = {0.0, 0.0, 0.0, 1.0};
-  emission = {0.2, 0.2, 0.2, 1.0};
-  shininess = {10.0, 0.0, 0.0, 0.0};
+  material.SetColor(mfFront, msAmbient, {0.0, 0.0, 0.0, 1.0});
+  material.SetColor(mfFront, msDiffuse, {0.5, 0.5, 1.0, 1.0});
+  material.SetColor(mfFront, msEmission, {0.2, 0.2, 0.2, 1.0});
+	material.SetColor(mfFront, msSpecular, {0.0, 0.0, 0.0, 1.0});
 }
 
 TAxis::~TAxis()

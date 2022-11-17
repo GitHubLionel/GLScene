@@ -40,6 +40,11 @@ class TLight : public TObject3D
     bool CheckIncrement(GLfloat x, GLfloat _inc);
 
   public:
+    TVector4D Ambient;
+		TVector4D Diffuse;
+		TVector4D Emission;
+		TVector4D Specular;
+
     // Attenuation
     GLfloat const_at;
     GLfloat lin_at;
