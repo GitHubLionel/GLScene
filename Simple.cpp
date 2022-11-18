@@ -31,6 +31,12 @@ void MPScene::Create_GLScene(void)
   // Clear existing object
   ClearObject3D();
 
+  // Restaure initial position
+  InitialView();
+
+  // Clean sub windows
+  CleanSubDisplay();
+
   // Un axe
   TAxis *axis = new TAxis(5);
   AddObject3D(axis);
