@@ -46,6 +46,8 @@ TGLScene::TGLScene()
 	SubWinColor.borderWidth = 3;
 	SubWinColor.foregroundColor = GLColor_black;
 
+	InitialView();
+
 	// The default light
 	light = new TLight();
 //  camera = new TCamera();
