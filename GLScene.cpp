@@ -285,6 +285,12 @@ void TGLScene::Create_GLScene(void)
 	// Clear existing object
 	ClearObject3D();
 
+  // Restaure initial position
+  InitialView();
+
+  // Clean sub windows
+  CleanSubDisplay();
+
 	// For example, add an axis and a sphere
 	TAxis *axis = new TAxis(5);
 	AddObject3D(axis);
@@ -293,13 +299,11 @@ void TGLScene::Create_GLScene(void)
 	AddObject3D(sphere);
 
 	// Add cylinder and cube
-	TCylinder *cylinder = new TCylinder(1, 0.3);
-	cylinder->SetPosition({ 0.0, 0.0, 1.0 });
+	TCylinder *cylinder = new TCylinder(1, 0.3, { 0.0, 0.0, 1.0 });
 	cylinder->SetDirection({ 1.0, 0.0, 0.0 });
 	AddObject3D(cylinder);
 
-	TCube *cube = new TCube(1.0);
-	cube->SetPosition({ 0.0, 2.0, 0.0 });
+	TCube *cube = new TCube(1.0, { 0.0, 2.0, 0.0 });
 	cube->SetDirection({ 0.0, 1.0, 1.0 });
 	AddObject3D(cube);
 #endif
