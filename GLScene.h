@@ -61,7 +61,6 @@ typedef std::vector<TObject3D *> TObject3DVector;
 
 class TGLScene: virtual public GLCallBack {
 	private:
-		bool GLContext_Exist;
 		bool GLWindow_Exist;
 		bool IsRunning;
 		bool CanResize;
@@ -207,6 +206,9 @@ class TGLScene: virtual public GLCallBack {
 		{
 			return GLWindow_Exist;
 		}
+
+		/// Terminate the OpenGL window
+		void Terminate(void);
 
 		void SetSubWinSize(int width, int height, int posX, int posY, glWinLocation loc = glwNone);
 		void SetSubWinSize();

@@ -83,6 +83,14 @@ typedef union TVector3D
 			return *this;
 		}
 
+		inline TVector3D& operator =(double vect[])
+		{
+			X = (GLfloat)vect[0];
+			Y = (GLfloat)vect[1];
+			Z = (GLfloat)vect[2];
+			return *this;
+		}
+
 		inline TVector3D& operator =(const std::initializer_list<GLfloat> list)
 		{
 			int count = 0;
@@ -246,16 +254,34 @@ typedef union TVector3D
 		inline TVector3D &Normalize()
 		{
 			GLfloat norm = X * X + Y * Y + Z * Z;
-			if (fabs(norm) < Epsilon) *this = TVector3D(0, 0, 0);
+			if (fabs(norm) < Epsilon)
+				*this = TVector3D(0, 0, 0);
 			else
 				*this /= sqrtf(norm);
+			return *this;
+		}
+
+		/// Make a stereographic projection
+		inline TVector3D& Stereo(void)
+		{
+			GLfloat d = 1-Z;
+			if (fabs(d) > Epsilon)
+			{
+				X /= d;
+				Y /= d;
+				Z = 0.0;
+			}
+			else
+			{
+				X = Y = Z = 0.0;
+			}
 			return *this;
 		}
 
 		/// Simple print function
 		inline void Print(void) const
 		{
-			printf("(%f, %f, %f)\n", X, Y, Z);
+			printf("(%.6g, %.6g, %.6g)\n", X, Y, Z);
 			fflush(stdout);
 		}
 } TVector3D;

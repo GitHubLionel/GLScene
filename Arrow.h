@@ -27,22 +27,22 @@ class TArrow : public TObject3D
     GLfloat angle;
     TVector3D axe_angle;
     TVector3D reduced_pos;
-    void ComputeParameters(void);
+    void ComputeParameters(bool normalize = true);
   protected:
 
   public:
     TArrow(GLfloat _len, GLfloat _thickness, TVector3D *pos = NULL);
     virtual ~TArrow();
 
-    void SetPosition(const TVector3D *pos) { position = *pos; ComputeParameters(); }
-    void SetPosition(GLfloat pos[]) { position = pos; ComputeParameters(); }
-    void SetPosition(std::initializer_list<GLfloat> list);
-    void SetPosition(GLfloat x, GLfloat y, GLfloat z) { position = {x, y, z}; ComputeParameters(); }
+    void SetPosition(const TVector3D *pos, bool normalize = true) { position = *pos; ComputeParameters(normalize); }
+    void SetPosition(GLfloat pos[], bool normalize = true) { position = pos; ComputeParameters(normalize); }
+    void SetPosition(std::initializer_list<GLfloat> list, bool normalize = true);
+    void SetPosition(GLfloat x, GLfloat y, GLfloat z, bool normalize = true) { position = {x, y, z}; ComputeParameters(normalize); }
 
-    void SetDirection(const TVector3D *pos) { direction = *pos; ComputeParameters(); }
-    void SetDirection(GLfloat pos[]) { direction = pos; ComputeParameters(); }
-    void SetDirection(std::initializer_list<GLfloat> list);
-    void SetDirection(GLfloat x, GLfloat y, GLfloat z) { direction = {x, y, z}; ComputeParameters(); }
+    void SetDirection(const TVector3D *pos, bool normalize = true) { direction = *pos; ComputeParameters(normalize); }
+    void SetDirection(GLfloat pos[], bool normalize = true) { direction = pos; ComputeParameters(normalize); }
+    void SetDirection(std::initializer_list<GLfloat> list, bool normalize = true);
+    void SetDirection(GLfloat x, GLfloat y, GLfloat z, bool normalize = true) { direction = {x, y, z}; ComputeParameters(normalize); }
 
     void DoDisplay(TDisplayMode mode = dmRender);
 };

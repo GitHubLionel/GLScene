@@ -10,6 +10,9 @@ using namespace GLScene;
 // The GLScene entry point for the GLUT callback events
 GLCallBack* _pGLCallBack = NULL;
 
+// The unique GLContext
+bool GLCallBack::GLContext_Exist = false;
+
 // Error
 static void OnError(const char *fmt, va_list ap)
 {

@@ -29,7 +29,6 @@
 
 TGLScene::TGLScene()
 {
-	GLContext_Exist = false;
 	GLWindow_Exist = false;
 	TerminateOnError = false;
 	IsRunning = false;
@@ -59,6 +58,7 @@ TGLScene::~TGLScene()
 	ClearObject3D(false);
 	delete light;
 //  delete camera;
+	Terminate();
 }
 
 //---------------------------------------------------------------------------
@@ -247,7 +247,6 @@ void TGLScene::OnClose(void)
 	if (IsRunning)
 	{
 		glutLeaveMainLoop();
-		GLContext_Exist = false;
 		IsRunning = false;
 		// Do latest event
 		glutMainLoopEvent();
@@ -257,6 +256,7 @@ void TGLScene::OnClose(void)
 //    glutDestroyWindow(glutGetWindow());
 
 	GLWindow_Exist = false;
+	Window_ID = -1;
 }
 
 void TGLScene::Get_GLInfo()
@@ -903,8 +903,8 @@ void TGLScene::Screenshot(void)
 // ********************************************************************************
 /**
  * Create the Context for the OpenGL Window
- * The context will be created only one times for all the life of the program.
- * But if the window is closed when we are in "glutMainLoop()", we need to recreate
+ * The context will be created only one time for all the life of the program.
+ * Even if the window is closed when we are in "glutMainLoop()", we do not recreate
  * the context for a new window.
  * Default width = 800, height = 600, posX = 150, posY = 100
  */
@@ -1006,6 +1006,19 @@ void TGLScene::Create_GLWindow(const char *name, bool blending, TVector4D backco
 	light->Enable();
 
 	GLWindow_Exist = true;
+}
+
+/**
+ * Terminate the window
+ */
+void TGLScene::Terminate(void)
+{
+//	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_EXIT);
+//	glutSetWindow(Window_ID);
+//	glutLeaveMainLoop();
+//	OnClose();
+	glutDestroyWindow(Window_ID);
+	glutMainLoopEvent(); // Call OnClose()
 }
 
 //---------------------------------------------------------------------------

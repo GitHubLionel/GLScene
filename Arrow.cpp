@@ -22,16 +22,17 @@ TArrow::~TArrow()
 
 }
 
-void TArrow::ComputeParameters(void)
+void TArrow::ComputeParameters(bool normalize)
 {
   reduced_pos = direction;
+  if (normalize)
   reduced_pos.Normalize();
   reduced_pos *= len2;
   axe_angle = {-reduced_pos.Y, reduced_pos.X, 0.0};
   angle = RADtoDEG * acos(reduced_pos.Z / len2);
 }
 
-void TArrow::SetPosition(std::initializer_list<GLfloat> list)
+void TArrow::SetPosition(std::initializer_list<GLfloat> list, bool normalize)
 {
   int count = 0;
   for (auto element : list)
@@ -39,10 +40,10 @@ void TArrow::SetPosition(std::initializer_list<GLfloat> list)
     position.Set(count, element);
     ++count;
   }
-  ComputeParameters();
+  ComputeParameters(normalize);
 }
 
-void TArrow::SetDirection(std::initializer_list<GLfloat> list)
+void TArrow::SetDirection(std::initializer_list<GLfloat> list, bool normalize)
 {
   int count = 0;
   for (auto element : list)
@@ -50,7 +51,7 @@ void TArrow::SetDirection(std::initializer_list<GLfloat> list)
     direction.Set(count, element);
     ++count;
   }
-  ComputeParameters();
+  ComputeParameters(normalize);
 }
 
 void TArrow::DoDisplay(TDisplayMode mode)

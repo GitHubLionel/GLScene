@@ -1,6 +1,7 @@
 #ifndef _GLCALLBACK_H
 #define	_GLCALLBACK_H
 
+#include <stdbool.h>
 #include <stdarg.h>  // for va_list
 
 namespace GLScene
@@ -49,6 +50,9 @@ class GLCallBack
 
     // For sub window
     virtual void OnSubDisplay(void) = 0;
+
+    // The unique GLContext
+    static bool GLContext_Exist;
 };
 
 void InitCallbacks(GLCallBack* _pGLScene);
